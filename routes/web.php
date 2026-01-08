@@ -32,6 +32,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
     // This route displays a list of tickets
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    // This route displays a specific ticket based on its ID
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    // This route updates the status of a specific ticket
+    Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.update-status');
+
 
 });
 

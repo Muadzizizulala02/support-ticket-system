@@ -49,4 +49,36 @@ class TicketController extends Controller
         // Return the view with tickets data
         return view('tickets.index', compact('tickets'));
     }
+
+    public function show(Ticket $ticket)
+    {
+        // Ensure the user owns the ticket
+        if ($ticket->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Return the view with the ticket data
+        return view('tickets.show', compact('ticket'));
+    }
+
+    public function updateStatus(Request $request, Ticket $ticket)
+    {
+        // Ensure the user owns the ticket
+        if ($ticket->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate the new status
+        $validated = $request->validate([
+            'status' => 'required|in:open,closed,in_progress',
+        ]);
+
+        // Update the ticket status
+        $ticket->update([
+            'status' => $validated['status'],
+        ]);
+
+        // Redirect back with success message
+        return redirect()->route('tickets.show', $ticket)->with('success', 'Ticket status updated successfully!');
+    }
 }
