@@ -1,0 +1,39 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TicketController;
+
+// When visited, it shows the welcome.blade.php view
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// When visited, it shows the dashboard.blade.php view
+Route::get('/dashboard', function () {
+    return view('dashboard');
+    // checks if user is logged in
+    // If NOT logged in → redirected to /login
+    // Contoh nak access dashboard: "http://127.0.0.1:8000/dashboard", dia akan redirect ke login dulu
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    // [TicketController::class, 'create'] - Calls the create() method in TicketController
+    // name('tickets.create'); - Names the route 'tickets.create' for easy reference
+    // This route shows the form to create a new ticket
+    Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+    // This route handles the form submission to store a new ticket
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    // This route displays a list of tickets
+    Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+
+});
+
+// semua route yang berkaitan dengan authentication (login, register, password reset, email verification, etc.) ada dalam file routes/auth.php
+require __DIR__ . '/auth.php';
