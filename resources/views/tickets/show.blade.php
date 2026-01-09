@@ -71,34 +71,40 @@
                     <!-- Divider -->
                     <div class="border-t border-gray-200 my-6"></div>
 
-                    {{-- <!-- Change Status -->
+                    <!-- Change Status -->
                     <div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-3">Change Status</h4>
-                        <form method="POST" action="{{ route('tickets.update-status', $ticket) }}">
-                            @csrf
-                            @method('PATCH')
+                        {{-- START: Only show this block to Admins --}}
+                        @if (auth()->user()->is_admin)
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Change Status</h4>
+                            <form method="POST" action="{{ route('tickets.update-status', $ticket) }}">
+                                @csrf
+                                @method('PATCH')
 
-                            <div class="flex items-center space-x-4">
-                                <select name="status"
-                                    class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="open" {{ $ticket->status === 'open' ? 'selected' : '' }}>
-                                        Open
-                                    </option>
-                                    <option value="in_progress"
-                                        {{ $ticket->status === 'in_progress' ? 'selected' : '' }}>
-                                        In Progress
-                                    </option>
-                                    <option value="closed" {{ $ticket->status === 'closed' ? 'selected' : '' }}>
-                                        Closed
-                                    </option>
-                                </select>
+                                <div class="flex items-center space-x-4">
+                                    <select name="status"
+                                        class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <option value="open" {{ $ticket->status === 'open' ? 'selected' : '' }}>
+                                            Open
+                                        </option>
+                                        <option value="in_progress"
+                                            {{ $ticket->status === 'in_progress' ? 'selected' : '' }}>
+                                            In Progress
+                                        </option>
+                                        <option value="closed" {{ $ticket->status === 'closed' ? 'selected' : '' }}>
+                                            Closed
+                                        </option>
+                                    </select>
 
-                                <button type="submit"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Update Status
-                                </button>
-                            </div>
-                        </form> --}}
+                                    <button type="submit"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        Update Status
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="border-t border-gray-200 my-6"></div>
+                        @endif
+                        {{-- END: Admin Check --}}
 
                         <!-- Divider -->
                         <div class="border-t border-gray-200 my-6"></div>
