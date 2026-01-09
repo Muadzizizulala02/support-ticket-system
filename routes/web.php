@@ -36,8 +36,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     // This route updates the status of a specific ticket
     Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.update-status');
+});
 
-
+// Admin routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/tickets', [TicketController::class, 'adminIndex'])->name('admin.tickets.index');
+    // This route displays a specific ticket based on its ID but use admin method
+    Route::get('/admin/tickets/{ticket}', [TicketController::class, 'adminShow'])->name('admin.tickets.show');
+    Route::patch('/admin/tickets/{ticket}/status', [TicketController::class, 'adminUpdateStatus'])->name('admin.tickets.update-status');
 });
 
 // semua route yang berkaitan dengan authentication (login, register, password reset, email verification, etc.) ada dalam file routes/auth.php
