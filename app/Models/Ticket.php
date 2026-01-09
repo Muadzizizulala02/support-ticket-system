@@ -27,4 +27,12 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the replies for this ticket.
+     */
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\Reply;
+
 
 use Illuminate\Http\Request;
 
@@ -53,8 +55,9 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         // Ensure the user owns the ticket
-        if ($ticket->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+        // If the current user did not create this ticket AND the current user is not an administrator
+        if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
+            abort(403, 'Unauthorized actionnn.');
         }
 
         // Return the view with the ticket data
@@ -134,5 +137,37 @@ class TicketController extends Controller
     }
 
     // End admin methods
+
+
+    // Start reply methods
+    /**
+     * Store a reply for a ticket.
+     */
+    public function storeReply(Request $request, Ticket $ticket)
+    {
+        // // Check if user can reply to this ticket
+        // // Either the ticket owner OR an admin
+
+        if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate the message
+        $validated = $request->validate([
+            'message' => 'required|string|max:1000',
+        ]);
+
+        // Create the reply
+        Reply::create([
+            'ticket_id' => $ticket->id,
+            'user_id' => Auth::id(),
+            'message' => $validated['message'],
+        ]);
+
+        return redirect()->route('tickets.show', $ticket)->with('success', 'Reply added successfully!');
+    }
+
+
+    // End reply methods
 
 }
