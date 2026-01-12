@@ -56,9 +56,14 @@ class TicketController extends Controller
     {
         // Ensure the user owns the ticket
         // If the current user did not create this ticket AND the current user is not an administrator
-        if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
-            abort(403, 'Unauthorized actionnn.');
-        }
+
+        //bawah ni without helper function (repeatitive jenuh every method nak buat)
+        // if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
+        //     abort(403, 'Unauthorized actionnn.');
+        // }
+
+        //so kita guna helper function
+        $this->authorizeTicketAccess($ticket);
 
         // Return the view with the ticket data
         return view('tickets.show', compact('ticket'));
@@ -133,6 +138,9 @@ class TicketController extends Controller
     {
 
         // Return the view with the ticket data
+        // suppose kita pkai admin specific view tapi sbb kita guna sama je ngn yg biasa punya sbb dh letak validaton view kt biasa punya
+        // lagipon sama je layout je so rugi je buat 2 file
+        // unless admin punya view tu totally different baru buat lain
         return view('tickets.show', compact('ticket'));
     }
 
@@ -148,9 +156,12 @@ class TicketController extends Controller
         // // Check if user can reply to this ticket
         // // Either the ticket owner OR an admin
 
-        if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
-            abort(403, 'Unauthorized action.');
-        }
+        // if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
+        //     abort(403, 'Unauthorized action.');
+        // }
+
+        // pakai helper function utk elakkan repeatitive code
+        $this->authorizeTicketAccess($ticket);
 
         // Validate the message
         $validated = $request->validate([
@@ -169,5 +180,14 @@ class TicketController extends Controller
 
 
     // End reply methods
+
+    // helper methods for authorization tickets access
+    private function authorizeTicketAccess(Ticket $ticket)
+    {
+        // If the current user did not create this ticket AND the current user is not an administrator
+        if ($ticket->user_id !== Auth::id() && !Auth::user()->is_admin) {
+            abort(403, 'Dont have permission to access this ticket.');
+        }
+    }
 
 }

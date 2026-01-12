@@ -71,7 +71,7 @@
                     <div class="border-t border-gray-200 my-6"></div>
 
                     <!-- Change Status -->
-                    {{-- <div>
+                    <div>
                         <h4 class="text-lg font-semibold text-gray-900 mb-3">Change Status</h4>
                         <form method="POST" action="{{ route('tickets.update-status', $ticket) }}">
                             @csrf
@@ -101,7 +101,7 @@
                                 </button>
                             </div>
                         </form>
-                    </div> --}}
+                    </div>
 
                 </div>
             </div>
